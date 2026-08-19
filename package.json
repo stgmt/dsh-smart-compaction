@@ -1,0 +1,62 @@
+{
+  "name": "dsh-smart-compaction",
+  "version": "0.1.0",
+  "description": "DSH compaction engine: hierarchical chunk summaries on the chat-selected model, with durable checkpoints and no raw-history deletion.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
+    },
+    "./package.json": "./package.json",
+    "./cordis.patch.yml": "./cordis.patch.yml"
+  },
+  "files": [
+    "dist/src",
+    "cordis.patch.yml",
+    "scripts",
+    "README.md",
+    "README.ru.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "node scripts/test.mjs",
+    "prepare": "node scripts/optional-build.mjs",
+    "doctor": "node scripts/doctor.mjs",
+    "replay": "node --experimental-strip-types scripts/replay.mjs",
+    "apply-preset": "node scripts/apply-preset.mjs"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/dsh-agent": "^0.1.0-rc.6",
+    "@deepseek-ai/dsh-compaction": "^0.1.0-rc.6",
+    "@deepseek-ai/dsh-compaction-basic": "^0.1.0-rc.6",
+    "@deepseek-ai/dsh-llm": "^0.1.0-rc.6"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/dsh-agent": "^0.1.0-rc.6",
+    "@deepseek-ai/dsh-compaction": "^0.1.0-rc.6",
+    "@deepseek-ai/dsh-compaction-basic": "^0.1.0-rc.6",
+    "@deepseek-ai/dsh-llm": "^0.1.0-rc.6",
+    "@types/node": "^22.15.3",
+    "typescript": "^5.8.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stgmt/dsh-smart-compaction.git"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

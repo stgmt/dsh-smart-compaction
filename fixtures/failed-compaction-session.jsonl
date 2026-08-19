@@ -1,0 +1,2 @@
+{"role":"user","content":[{"type":"text","text":"chunk one still pending after a crashed compact"}],"source":{"kind":"user"}}
+{"role":"assistant","content":[{"type":"text","text":"will continue from checkpoint"}],"source":{"kind":"model"}}

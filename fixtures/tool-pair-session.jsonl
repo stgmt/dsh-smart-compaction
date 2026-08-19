@@ -1,0 +1,4 @@
+{"role":"user","content":[{"type":"text","text":"run ls"}],"source":{"kind":"user"}}
+{"role":"assistant","content":[{"type":"text","text":"listing"},{"type":"tool-call","id":"call-bash-0","name":"bash","arguments":"{\"command\":\"ls\"}"}],"source":{"kind":"model"}}
+{"role":"user","content":[{"type":"tool-result","toolCallId":"call-bash-0","content":[{"type":"text","text":"a.ts"}]}],"source":{"kind":"tool"}}
+{"role":"assistant","content":[{"type":"text","text":"one file"}],"source":{"kind":"model"}}
