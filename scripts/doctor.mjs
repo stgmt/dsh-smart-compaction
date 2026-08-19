@@ -15,7 +15,7 @@ const check = (cond, message) => {
 check(pkg.dsh?.bundle?.patch === "./cordis.patch.yml", "package.json declares dsh.bundle.patch");
 check(existsSync(join(root, "cordis.patch.yml")), "cordis.patch.yml exists");
 const patch = readFileSync(join(root, "cordis.patch.yml"), "utf8");
-check(!patch.includes("id: compaction-basic"), "host patch does not resurrect web host-plane compaction-basic");
+check(patch.includes("disabled: true") && patch.includes("compaction-smart"), "host patch disables stock basic and inserts compaction-smart");
 check(existsSync(join(root, "src", "engine.ts")), "engine source present");
 const home = process.env.DSH_HOME?.trim() || join(homedir(), ".dsh");
 const preset = join(home, ".agent-presets", "smart", "agent.cordis.yml");

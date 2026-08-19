@@ -14,14 +14,22 @@ surface replace once, after the chain succeeds
 
 Raw JSONL is never deleted. Tool-call / tool-result pairs are never split. The compact request uses the **chat-selected** `provider`, `model`, and `reasoningEffort`. There is no auxiliary compact model, no triage plugin, no ARGP, no second Headroom.
 
-## Install (after v0.1.0 is tagged)
+## Install
 
 ```bash
-dsh plugin --profile web add github:stgmt/dsh-smart-compaction#v0.1.0
+dsh plugin --profile web add github:stgmt/dsh-smart-compaction
 node node_modules/dsh-smart-compaction/scripts/apply-preset.mjs
 ```
 
-Then start a session on the **smart** agent preset. Do not point the disabled web host-plane `compaction-basic` row at this package — that would register a second `ctx.compaction`.
+Then open a session on the **smart** agent preset. DSH refuses to rename a row (`name mismatch ... skipping`), so the bundle **disables** stock `compaction-basic` and **inserts** `compaction-smart`. Web sessions still compact from the preset realm — that is why the `smart` preset exists.
+
+Prove it:
+
+```bash
+npm test
+npm run verify
+dsh --profile web --dump-config   # compaction-basic disabled, compaction-smart present
+```
 
 ## What it does not do
 

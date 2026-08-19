@@ -1,10 +1,7 @@
-# Host-plane overlay. Intentionally empty of compaction service rows.
-#
-# On the `web` profile, `@deepseek-ai/dsh-web-app` already disables host-plane
-# `compaction-basic`. Replacing that disabled row here would resurrect a second
-# ctx.compaction and collide with the live engine inside the agent preset.
-#
-# The live replacement is the `smart` user preset installed by
-# `scripts/apply-preset.mjs` (copies `standard`, points the isolated
-# compaction-basic row at this package).
-[]
+# Cannot rename a row: loader skips `name` mismatches.
+# Disable stock basic, then insert this engine as a new host-plane row.
+- id: compaction-basic
+  disabled: true
+- insert:
+    - id: compaction-smart
+      name: dsh-smart-compaction

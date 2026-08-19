@@ -28,6 +28,7 @@
     "test": "node scripts/test.mjs",
     "prepare": "node scripts/optional-build.mjs",
     "doctor": "node scripts/doctor.mjs",
+    "verify": "node scripts/live-verify.mjs",
     "replay": "node --experimental-strip-types scripts/replay.mjs",
     "apply-preset": "node scripts/apply-preset.mjs"
   },
@@ -49,6 +50,9 @@
     "@deepseek-ai/dsh-compaction": "^0.1.0-rc.6",
     "@deepseek-ai/dsh-compaction-basic": "^0.1.0-rc.6",
     "@deepseek-ai/dsh-llm": "^0.1.0-rc.6",
+    "@deepseek-ai/dsh-session": "^0.1.0-rc.6",
+    "@deepseek-ai/dsh-timeout": "^0.1.0-rc.6",
+    "@deepseek-ai/dsh-token-meter": "^0.1.0-rc.6",
     "@types/node": "^22.15.3",
     "typescript": "^5.8.3"
   },
