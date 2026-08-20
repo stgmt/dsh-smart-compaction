@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.1
+
+- No extra agent preset. Overlay stock compaction inside every mode that already has it (standard, code, cordis, user copies).
+- Host plugin `dsh-smart-compaction/autonomy` re-applies the overlay on boot, before mount/copy/recompose, and on composition-file writes, so later presets and DSH upgrades stay on this engine without the user picking anything.
+- Removes the leftover `Smart compaction` roster row if present.
+
 ## 0.1.0
 
 - First release: hierarchical compaction on the chat-selected provider/model/effort.

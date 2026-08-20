@@ -1,7 +1,7 @@
 {
   "name": "dsh-smart-compaction",
-  "version": "0.1.0",
-  "description": "DSH compaction engine: hierarchical chunk summaries on the chat-selected model, with durable checkpoints and no raw-history deletion.",
+  "version": "0.1.1",
+  "description": "DSH compaction engine: hierarchical chunk summaries on the chat-selected model, with durable checkpoints and no raw-history deletion. Overlays every agent mode; no extra preset to pick.",
   "license": "MIT",
   "type": "module",
   "main": "./dist/src/index.js",
@@ -12,7 +12,11 @@
       "default": "./dist/src/index.js"
     },
     "./package.json": "./package.json",
-    "./cordis.patch.yml": "./cordis.patch.yml"
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./autonomy": {
+      "types": "./dist/src/autonomy.d.ts",
+      "default": "./dist/src/autonomy.js"
+    }
   },
   "files": [
     "dist/src",

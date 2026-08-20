@@ -1,7 +1,8 @@
-# Cannot rename a row: loader skips `name` mismatches.
-# Disable stock basic, then insert this engine as a new host-plane row.
+# Host plane only. The engine is NOT inserted here — ctx.compaction lives in
+# each agent preset's isolate group. Autonomy rewrites those rows in place so
+# the user keeps their current mode (standard, creator, reels-dsh, …).
 - id: compaction-basic
   disabled: true
 - insert:
-    - id: compaction-smart
-      name: dsh-smart-compaction
+    - id: smart-compaction-autonomy
+      name: dsh-smart-compaction/autonomy

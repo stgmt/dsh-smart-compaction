@@ -7,26 +7,32 @@ summary_n = chat_model(summary_{n-1} + chunk_n)
 surface replace once, after the whole chain succeeds
 ```
 
-## Install (one command, every DSH project)
+You keep the agent mode you already use (Standard, Creator, Code, your own copy). This package does **not** add a picker row.
+
+## Install (one command)
 
 ```bash
-dsh plugin --profile web add github:stgmt/dsh-smart-compaction#v0.1.0
+dsh plugin --profile web add github:stgmt/dsh-smart-compaction#v0.1.1
 ```
 
-That is the whole install. The package `prepare`/`postinstall` then:
+That is the whole install. After that, forget it.
 
-- adds itself to **every** DSH profile on the machine (`web`, `headless`, …)
-- disables stock `compaction-basic` on the host plane
-- rewrites shipped `standard` / `code` / `cordis` (DSH will not let a user preset steal those ids) and your user presets so compact goes through this engine
+The package:
 
-Restart DSH. New sessions on the default **standard** preset already compact this way. No extra preset to pick.
+- adds itself to **every** DSH profile on the machine
+- overlays stock `compaction-basic` **inside every agent preset that has compaction** (shipped `standard` / `code` / `cordis`, and your user presets)
+- does that again on every DSH boot, and again right before a preset mounts or is copied, so a later `copy(standard → mine)` and a DSH upgrade do not silently go back to stock
+- never asks you to switch modes
 
-If pnpm asks to allow the build script, allow it — git-hosted DSH plugins need that. If compact is still stock after a DSH upgrade, run the same `dsh plugin add` again (or `node node_modules/dsh-smart-compaction/scripts/install-global.mjs`).
+Restart DSH once after the first add so the overlay plugin is loaded. New and existing sessions on **your current mode** compact through this engine.
 
-Pinned tag is `v0.1.0`. `github:stgmt/dsh-smart-compaction` tracks `main`.
+If pnpm asks to allow the build script, allow it — git-hosted DSH plugins need that. If scripts were skipped, the next DSH start still overlays: the host plugin is the installer.
+
+Pinned tag is `v0.1.1`. `github:stgmt/dsh-smart-compaction` tracks `main`.
 
 ## What it does not do
 
+- Add a "Smart compaction" agent mode
 - Delete or rewrite raw session events
 - Compact after every turn
 - Swap in Haiku / Spark / Sol / a configured `summarizationModel`
