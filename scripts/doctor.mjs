@@ -18,12 +18,25 @@ const patch = readFileSync(join(root, "cordis.patch.yml"), "utf8");
 check(patch.includes("disabled: true") && patch.includes("compaction-smart"), "host patch disables stock basic and inserts compaction-smart");
 check(existsSync(join(root, "src", "engine.ts")), "engine source present");
 const home = process.env.DSH_HOME?.trim() || join(homedir(), ".dsh");
-const preset = join(home, ".agent-presets", "smart", "agent.cordis.yml");
-if (existsSync(preset)) {
-  const yaml = readFileSync(preset, "utf8");
-  check(yaml.includes("dsh-smart-compaction"), "user preset smart mounts this package");
-  check(!yaml.includes("name: '@deepseek-ai/dsh-compaction-basic'"), "user preset smart no longer mounts stock basic");
+const shipped = join(
+  process.env.APPDATA || "",
+  "npm",
+  "node_modules",
+  "@deepseek-ai",
+  "dsh",
+  "config",
+  "agent-presets",
+  "standard",
+  "agent.cordis.yml",
+);
+if (existsSync(shipped)) {
+  const yaml = readFileSync(shipped, "utf8");
+  check(yaml.includes("dsh-smart-compaction"), "shipped standard preset mounts this package");
+  check(!yaml.includes("name: '@deepseek-ai/dsh-compaction-basic'"), "shipped standard no longer mounts stock basic");
 } else {
-  console.log("WARN user preset ~/.dsh/.agent-presets/smart not installed — run node scripts/apply-preset.mjs");
+  console.log("WARN shipped standard preset not found");
 }
+const homePatch = join(home, "cordis.patch.yml");
+check(existsSync(homePatch) && readFileSync(homePatch, "utf8").includes("disabled: true"), "home cordis.patch.yml disables stock basic");
+check(!existsSync(homePatch) || !readFileSync(homePatch, "utf8").includes("id: compaction-smart"), "home patch does not double-insert compaction-smart");
 process.exit(ok ? 0 : 1);

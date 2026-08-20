@@ -12,11 +12,13 @@ surface replace только когда цепь закончилась
 
 Исходный JSONL не удаляется. Пары tool_call/tool_result не режутся. `provider + model + reasoningEffort` берутся из текущего чата. Никакой auxiliary-модели, triage, ARGP, второго Headroom.
 
-## Установка
+## Установка на всю машину
+
+Штатный пресет `standard` нельзя подменить одноимённым user-preset. Одного `dsh plugin add` в web мало.
 
 ```bash
-dsh plugin --profile web add github:stgmt/dsh-smart-compaction#v0.1.0
-node node_modules/dsh-smart-compaction/scripts/apply-preset.mjs
+cd путь/к/dsh-smart-compaction
+npm run install-global
 ```
 
-Сессию открывать на пресете **smart**. Host-plane row `compaction-basic` в web-профиле должен оставаться disabled.
+Скрипт ставит пакет во все DSH-профили, отключает stock `compaction-basic` на host-plane и переписывает живые `agent.cordis.yml` (`standard` / `code` / `cordis` и user-presets) на `dsh-smart-compaction`. После обновления `@deepseek-ai/dsh` запусти `install-global` снова. Перезапусти DSH.

@@ -30,7 +30,8 @@
     "doctor": "node scripts/doctor.mjs",
     "verify": "node scripts/live-verify.mjs",
     "replay": "node --experimental-strip-types scripts/replay.mjs",
-    "apply-preset": "node scripts/apply-preset.mjs"
+    "apply-preset": "node scripts/install-global.mjs",
+    "install-global": "node scripts/install-global.mjs"
   },
   "dsh": {
     "bundle": {

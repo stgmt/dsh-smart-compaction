@@ -14,20 +14,28 @@ surface replace once, after the chain succeeds
 
 Raw JSONL is never deleted. Tool-call / tool-result pairs are never split. The compact request uses the **chat-selected** `provider`, `model`, and `reasoningEffort`. There is no auxiliary compact model, no triage plugin, no ARGP, no second Headroom.
 
-## Install
+## Install globally (every DSH profile and preset)
+
+Shipped `standard` cannot be replaced by a user preset of the same id. A one-profile add is not enough. From this repo:
 
 ```bash
-dsh plugin --profile web add github:stgmt/dsh-smart-compaction
-node node_modules/dsh-smart-compaction/scripts/apply-preset.mjs
+npm run install-global
 ```
 
-Then open a session on the **smart** agent preset. DSH refuses to rename a row (`name mismatch ... skipping`), so the bundle **disables** stock `compaction-basic` and **inserts** `compaction-smart`. Web sessions still compact from the preset realm — that is why the `smart` preset exists.
+That script:
+
+1. Adds the package to every profile under `~/.dsh/profiles` (`web`, `headless`, …).
+2. Writes `~/.dsh/cordis.patch.yml` so host-plane stock basic is disabled and `compaction-smart` is inserted (headless and any profile where compaction lives on the host).
+3. Rewrites every live `agent.cordis.yml` that still names `@deepseek-ai/dsh-compaction-basic` — shipped `standard` / `code` / `cordis` and your user presets. Originals are saved as `*.dsh-smart-compaction.bak`.
+
+Restart DSH. New sessions on the default **standard** preset compact through this engine. After `npm update -g @deepseek-ai/dsh`, run `install-global` again.
 
 Prove it:
 
 ```bash
 npm test
 npm run verify
+npm run doctor
 dsh --profile web --dump-config   # compaction-basic disabled, compaction-smart present
 ```
 
