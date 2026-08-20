@@ -15,6 +15,7 @@ import {
   patchCompositionFile,
   removeLeftoverSmartPreset,
   rewriteComposition,
+  writeHomeDisablePatch,
 } from "../src/preset-overlay.ts";
 
 const STOCK_YAML = `# compaction
@@ -122,6 +123,27 @@ test("autonomy copy hook overlays a newly authored preset without a roster row o
     assert.equal(readFileSync(path, "utf8").includes(STOCK_ENGINE), false);
   } finally {
     rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("home disable patch does not wipe sibling rows", () => {
+  const home = mkdtempSync(join(tmpdir(), "dsh-home-patch-"));
+  try {
+    writeFileSync(
+      join(home, "cordis.patch.yml"),
+      `- id: keep-me
+  name: my-other-plugin
+- id: compaction-smart
+  name: dsh-smart-compaction
+`,
+    );
+    writeHomeDisablePatch({ DSH_HOME: home });
+    const text = readFileSync(join(home, "cordis.patch.yml"), "utf8");
+    assert.equal(text.includes("id: keep-me"), true);
+    assert.equal(text.includes("id: compaction-smart"), false);
+    assert.equal(text.includes("disabled: true"), true);
+  } finally {
+    rmSync(home, { recursive: true, force: true });
   }
 });
 

@@ -123,10 +123,15 @@ export function apply(ctx: Context, options: AutonomyOptions = {}): void {
     const roster = scoped.get("agentPresets") as Roster | undefined;
     if (roster === undefined) return;
     const unwrap = wrapRoster(ctx, roster);
-    scoped.effect(() => unwrap, "smart-compaction.roster-hooks");
+    let disposed = false;
+    scoped.effect(() => () => {
+      disposed = true;
+      unwrap();
+    }, "smart-compaction.roster-hooks");
     void patchRoster(ctx, roster);
     if (options.watch === false) return;
     void roster.list().then((rows) => {
+      if (disposed) return;
       const roots = uniqueDirs(rows.map((row) => row.path));
       for (const extra of [...findShippedPresetRoots(), join(dshHome(), ".agent-presets")]) {
         if (!roots.includes(extra)) roots.push(extra);

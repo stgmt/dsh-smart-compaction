@@ -159,22 +159,26 @@ export function writeHomeDisablePatch(env = process.env) {
         return;
     }
     const existing = readFileSync(path, "utf8");
-    if (existing.includes("id: compaction-smart")) {
-        const bak = `${path}.dsh-smart-compaction.bak`;
-        if (!existsSync(bak))
-            writeFileSync(bak, existing);
-        writeFileSync(path, ours);
+    let next = existing
+        .replace(/^- id: compaction-smart\r?\n(?:[ \t].*\r?\n)*/gm, "")
+        .replace(/^- insert:\r?\n(?:[ \t]+- id: compaction-smart\r?\n(?:[ \t]+.*\r?\n)*)/gm, "");
+    const stripped = next !== existing;
+    if (next.includes("id: compaction-basic") && next.includes("disabled: true") && !next.includes("id: compaction-smart")) {
+        if (stripped) {
+            const bak = `${path}.dsh-smart-compaction.bak`;
+            if (!existsSync(bak))
+                writeFileSync(bak, existing);
+            writeFileSync(path, next);
+        }
         return;
     }
-    if (existing.includes("id: compaction-basic") && existing.includes("disabled: true"))
-        return;
     const bak = `${path}.dsh-smart-compaction.bak`;
     if (!existsSync(bak))
         writeFileSync(bak, existing);
-    const trimmed = existing.trim();
+    const trimmed = next.trim();
     if (trimmed === "" || trimmed === "[]") {
         writeFileSync(path, ours);
         return;
     }
-    writeFileSync(path, `${existing.trimEnd()}\n\n${ours}`);
+    writeFileSync(path, `${next.trimEnd()}\n\n${ours}`);
 }

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.3
+
+- Home-layer overlay no longer replaces the whole `$DSH_HOME/cordis.patch.yml` when stripping a leftover `compaction-smart` insert.
+
 ## 0.1.2
 
 - Drop leftover `apply-preset` script. Overlay is `install-global` plus the host autonomy plugin; there is no roster preset to apply.

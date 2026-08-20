@@ -12,7 +12,7 @@ surface replace один раз, когда вся цепь прошла
 ## Установка — одна команда
 
 ```bash
-dsh plugin --profile web add github:stgmt/dsh-smart-compaction#v0.1.2
+dsh plugin --profile web add github:stgmt/dsh-smart-compaction#v0.1.3
 ```
 
 Дальше ничего руками. Пакет сам:
@@ -26,4 +26,4 @@ dsh plugin --profile web add github:stgmt/dsh-smart-compaction#v0.1.2
 
 Если pnpm просит allowBuilds — разреши. Если lifecycle-скрипты срезаны, overlay всё равно сработает на следующем старте DSH.
 
-Pinned tag: `v0.1.2`. Без tag — `main`.
+Pinned tag: `v0.1.3`. Без tag — `main`.

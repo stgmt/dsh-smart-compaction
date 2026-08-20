@@ -12,7 +12,7 @@ You keep the agent mode you already use (Standard, Creator, Code, your own copy)
 ## Install (one command)
 
 ```bash
-dsh plugin --profile web add github:stgmt/dsh-smart-compaction#v0.1.2
+dsh plugin --profile web add github:stgmt/dsh-smart-compaction#v0.1.3
 ```
 
 That is the whole install. After that, forget it.
@@ -28,7 +28,7 @@ Restart DSH once after the first add so the overlay plugin is loaded. New and ex
 
 If pnpm asks to allow the build script, allow it — git-hosted DSH plugins need that. If scripts were skipped, the next DSH start still overlays: the host plugin is the installer.
 
-Pinned tag is `v0.1.2`. `github:stgmt/dsh-smart-compaction` tracks `main`.
+Pinned tag is `v0.1.3`. `github:stgmt/dsh-smart-compaction` tracks `main`.
 
 ## What it does not do
 

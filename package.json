@@ -1,6 +1,6 @@
 {
   "name": "dsh-smart-compaction",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "DSH compaction engine: hierarchical chunk summaries on the chat-selected model, with durable checkpoints and no raw-history deletion. Overlays every agent mode; no extra preset to pick.",
   "license": "MIT",
   "type": "module",
