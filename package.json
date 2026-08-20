@@ -26,7 +26,8 @@
   "scripts": {
     "build": "tsc",
     "test": "node scripts/test.mjs",
-    "prepare": "node scripts/optional-build.mjs",
+    "prepare": "node scripts/prepare.mjs",
+    "postinstall": "node scripts/install-global.mjs",
     "doctor": "node scripts/doctor.mjs",
     "verify": "node scripts/live-verify.mjs",
     "replay": "node --experimental-strip-types scripts/replay.mjs",

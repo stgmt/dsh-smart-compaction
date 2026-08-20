@@ -1,24 +1,26 @@
 # dsh-smart-compaction
 
-Замена `@deepseek-ai/dsh-compaction-basic`: история жмётся **несколькими шагами** выбранной в чате моделью, а не одним гигантским запросом.
-
-Протокол DSH не ломаем: lock `compaction/start`, финальный `user/message` replace, `compaction/end`. Меняется только summarizer.
+Иерархический `/compact` для DeepSeek Harness. Берёт **модель, которая уже выбрана в чате**, режет историю на chunks, пишет checkpoint после каждого шага, не удаляет raw JSONL, не рвёт tool-call и tool-result.
 
 ```text
 summary_n = выбранная_модель(summary_{n-1} + chunk_n)
-checkpoint после каждого chunk
-surface replace только когда цепь закончилась
+surface replace один раз, когда вся цепь прошла
 ```
 
-Исходный JSONL не удаляется. Пары tool_call/tool_result не режутся. `provider + model + reasoningEffort` берутся из текущего чата. Никакой auxiliary-модели, triage, ARGP, второго Headroom.
-
-## Установка на всю машину
-
-Штатный пресет `standard` нельзя подменить одноимённым user-preset. Одного `dsh plugin add` в web мало.
+## Установка — одна команда, все проекты DSH
 
 ```bash
-cd путь/к/dsh-smart-compaction
-npm run install-global
+dsh plugin --profile web add github:stgmt/dsh-smart-compaction#v0.1.0
 ```
 
-Скрипт ставит пакет во все DSH-профили, отключает stock `compaction-basic` на host-plane и переписывает живые `agent.cordis.yml` (`standard` / `code` / `cordis` и user-presets) на `dsh-smart-compaction`. После обновления `@deepseek-ai/dsh` запусти `install-global` снова. Перезапусти DSH.
+Дальше ничего руками. `prepare`/`postinstall` сам:
+
+- ставит пакет во **все** профили (`web`, `headless`, …)
+- выключает stock `compaction-basic` на host-plane
+- переписывает shipped `standard` / `code` / `cordis` и user-presets (одноимённым user-preset DSH не даст заменить `standard`)
+
+Перезапусти DSH. Новые сессии на обычном **standard** уже компактят этим движком. Отдельный пресет выбирать не надо.
+
+Если pnpm просит allowBuilds — разреши, так ставятся git-плагины DSH. После апдейта `@deepseek-ai/dsh` повтори ту же команду (или `node node_modules/dsh-smart-compaction/scripts/install-global.mjs`).
+
+Pinned tag: `v0.1.0`. Без tag — `main`.

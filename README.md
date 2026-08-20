@@ -1,43 +1,29 @@
 # dsh-smart-compaction
 
-Drop-in replacement for `@deepseek-ai/dsh-compaction-basic` that **does not** send the whole shadowed region in one model call.
-
-It keeps DSH's lock and surface protocol (`compaction/start` → summary → `user/message` replace → `compaction/end`) and replaces only the summarizer:
+Hierarchical `/compact` for DeepSeek Harness. Uses the **model already selected in the chat**, splits history into chunks, checkpoints each step, never deletes the raw session log, never splits a tool-call from its result.
 
 ```text
-summary_0 = empty
-summary_1 = chat_model(summary_0 + chunk_1)   # checkpoint 1
-summary_2 = chat_model(summary_1 + chunk_2)   # checkpoint 2
-...
-surface replace once, after the chain succeeds
+summary_n = chat_model(summary_{n-1} + chunk_n)
+surface replace once, after the whole chain succeeds
 ```
 
-Raw JSONL is never deleted. Tool-call / tool-result pairs are never split. The compact request uses the **chat-selected** `provider`, `model`, and `reasoningEffort`. There is no auxiliary compact model, no triage plugin, no ARGP, no second Headroom.
-
-## Install globally (every DSH profile and preset)
-
-Shipped `standard` cannot be replaced by a user preset of the same id. A one-profile add is not enough. From this repo:
+## Install (one command, every DSH project)
 
 ```bash
-npm run install-global
+dsh plugin --profile web add github:stgmt/dsh-smart-compaction#v0.1.0
 ```
 
-That script:
+That is the whole install. The package `prepare`/`postinstall` then:
 
-1. Adds the package to every profile under `~/.dsh/profiles` (`web`, `headless`, …).
-2. Writes `~/.dsh/cordis.patch.yml` so host-plane stock basic is disabled and `compaction-smart` is inserted (headless and any profile where compaction lives on the host).
-3. Rewrites every live `agent.cordis.yml` that still names `@deepseek-ai/dsh-compaction-basic` — shipped `standard` / `code` / `cordis` and your user presets. Originals are saved as `*.dsh-smart-compaction.bak`.
+- adds itself to **every** DSH profile on the machine (`web`, `headless`, …)
+- disables stock `compaction-basic` on the host plane
+- rewrites shipped `standard` / `code` / `cordis` (DSH will not let a user preset steal those ids) and your user presets so compact goes through this engine
 
-Restart DSH. New sessions on the default **standard** preset compact through this engine. After `npm update -g @deepseek-ai/dsh`, run `install-global` again.
+Restart DSH. New sessions on the default **standard** preset already compact this way. No extra preset to pick.
 
-Prove it:
+If pnpm asks to allow the build script, allow it — git-hosted DSH plugins need that. If compact is still stock after a DSH upgrade, run the same `dsh plugin add` again (or `node node_modules/dsh-smart-compaction/scripts/install-global.mjs`).
 
-```bash
-npm test
-npm run verify
-npm run doctor
-dsh --profile web --dump-config   # compaction-basic disabled, compaction-smart present
-```
+Pinned tag is `v0.1.0`. `github:stgmt/dsh-smart-compaction` tracks `main`.
 
 ## What it does not do
 
@@ -51,6 +37,6 @@ dsh --profile web --dump-config   # compaction-basic disabled, compaction-smart 
 ```bash
 npm install
 npm test
-node scripts/doctor.mjs
-node --experimental-strip-types scripts/replay.mjs fixtures/oversized-session.jsonl 200
+npm run verify
+npm run doctor
 ```

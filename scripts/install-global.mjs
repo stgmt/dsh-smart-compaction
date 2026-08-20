@@ -139,18 +139,59 @@ function profileNames() {
   });
 }
 
+function githubSpec() {
+  if (process.env.DSH_SMART_COMPACTION_SPEC) return process.env.DSH_SMART_COMPACTION_SPEC;
+  try {
+    const pkg = JSON.parse(readFileSync(join(pluginRoot, "package.json"), "utf8"));
+    const url = String(pkg.repository?.url || "");
+    const match = url.match(/github\.com[/:]([^/]+\/[^/.]+)/i);
+    if (match) return `github:${match[1].replace(/\.git$/, "")}`;
+  } catch {
+    /* fall through */
+  }
+  return pluginRoot;
+}
+
+function profileHasPlugin(name) {
+  try {
+    const pkg = JSON.parse(readFileSync(join(dshHome(), "profiles", name, "package.json"), "utf8"));
+    return Boolean(pkg.dependencies?.[OURS] || pkg.dsh?.profile?.bundles?.includes(OURS));
+  } catch {
+    return false;
+  }
+}
+
 function addToProfiles() {
-  const profiles = profileNames();
-  if (profiles.length === 0) {
-    log(false, "no DSH profiles found");
+  if (process.env.DSH_SMART_COMPACTION_INSTALLING === "1") {
+    log(true, "skip profile add (already inside plugin install)");
     return;
   }
+  const profiles = profileNames();
+  if (profiles.length === 0) {
+    log(true, "no DSH profiles yet; presets and home patch are still applied");
+    return;
+  }
+  const probe = spawnSync("dsh", ["--version"], {
+    encoding: "utf8",
+    shell: process.platform === "win32",
+  });
+  if (probe.error || (probe.status ?? 1) !== 0) {
+    log(true, "dsh CLI not on PATH; patched presets/home only");
+    return;
+  }
+  const spec = githubSpec();
+  const env = { ...process.env, DSH_SMART_COMPACTION_INSTALLING: "1" };
   for (const name of profiles) {
-    const result = spawnSync("dsh", ["plugin", "--profile", name, "add", pluginRoot], {
+    if (profileHasPlugin(name)) {
+      log(true, `profile ${name} already has ${OURS}`);
+      continue;
+    }
+    const result = spawnSync("dsh", ["plugin", "--profile", name, "add", spec], {
       stdio: "inherit",
       shell: process.platform === "win32",
+      env,
     });
-    if ((result.status ?? 1) !== 0) log(false, `dsh plugin --profile ${name} add failed`);
+    if ((result.status ?? 1) !== 0) log(false, `dsh plugin --profile ${name} add ${spec} failed`);
     else log(true, `profile ${name} has ${OURS}`);
   }
 }
