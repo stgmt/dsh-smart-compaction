@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.2
+
+- Drop leftover `apply-preset` script. Overlay is `install-global` plus the host autonomy plugin; there is no roster preset to apply.
+
 ## 0.1.1
 
 - No extra agent preset. Overlay stock compaction inside every mode that already has it (standard, code, cordis, user copies).
